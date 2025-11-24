@@ -12,7 +12,6 @@ const Login = () => {
   });
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const [islogin, setIslogin] = useState(false);
   const [remember,setRemember]=useState(false);
 
     const {setIsTokenValid}=useContext(TokenContext);
@@ -47,18 +46,13 @@ const Login = () => {
           localStorage.setItem("remember",false);
         }
         setIsTokenValid(true);
-        setIslogin(true);
+        navigate("/todo", { replace: true });
 
       } 
     } catch (error) {
       console.log(error.response.data.message);
       setError(error.response.data.message);
     }
-  };
-
-  const completeLogin = () => {
-    setIslogin(false);
-    navigate("/todo", { replace: true });
   };
 
   useEffect(()=>{
@@ -69,42 +63,6 @@ const Login = () => {
       setRemember(true);
     }
   },[]);
-
-
-
-  if (islogin) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full text-center">
-          <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg
-              className="w-8 h-8 text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M5 13l4 4L19 7"
-              ></path>
-            </svg>
-          </div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">
-            Welcome Back!
-          </h2>
-          <p className="text-gray-600 mb-6">You have successfully logged in</p>
-          <button
-            onClick={completeLogin}
-            className="bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-2 rounded-lg font-semibold transition-colors cursor-pointer"
-          >
-            Add Your Works
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="h-[calc(100vh-3.75rem)] bg-gradient-to-br from-blue-500 to-purple-600  flex items-center justify-center flex-col mt-15">
