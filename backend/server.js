@@ -7,13 +7,9 @@ const cors=require("cors");
 const app=express();
 
 const port=process.env.PORT; 
-const allowedOrigins=process.env.CLIENT_ORIGIN?.split(",").map(origin=>origin.trim()).filter(Boolean) || ["http://localhost:5173"];
-const corsOptions={
-    origin:allowedOrigins,
-    credentials:true,
-};
+
  app.use(express.json());
- app.use(cors(corsOptions));
+ app.use(cors());
 
  //connect to database
  connectToDb();
