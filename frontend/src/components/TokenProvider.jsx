@@ -5,14 +5,13 @@ export const TokenContext = createContext(false);
 
 const TokenProvider = ({ children }) => {
   const [isTokenValid, setIsTokenValid] = useState(false);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const tokenCheck = async () => {
       const accesstoken = localStorage.getItem("accessToken");
       if (!accesstoken) {
         setIsTokenValid(false);
-        setLoading(false);
+
         return;
       }
       try {
@@ -21,19 +20,15 @@ const TokenProvider = ({ children }) => {
         });
 
         setIsTokenValid(data.success);
-        setLoading(false);
       } catch (error) {
         console.log("error", error?.response?.data?.message);
         setIsTokenValid(false);
-        setLoading(false);
       }
     };
 
     tokenCheck();
   }, [isTokenValid]);
-  if (loading) {
-    return <h1>Loading......</h1>;
-  }
+
   return (
     <TokenContext.Provider value={{ isTokenValid, setIsTokenValid }}>
       {children}
