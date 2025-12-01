@@ -1,6 +1,5 @@
-import { useState } from "react";
+
 import { CheckCircle, List, Clock, Users } from "lucide-react";
-import Header from "./Header";
 import HeroSection from "./HeroSection";
 import FeatureSection from "./FeatureSection";
 import CtaSection from "./CtaSection";

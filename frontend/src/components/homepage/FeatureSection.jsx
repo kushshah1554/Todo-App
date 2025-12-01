@@ -1,4 +1,4 @@
-import React from "react";
+
 
 const FeatureSection = ({ List, Clock, Users }) => {
   const features = [
