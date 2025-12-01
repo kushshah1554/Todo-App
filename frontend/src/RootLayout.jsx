@@ -1,6 +1,6 @@
-import { Navigate, Outlet } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import Header from "./components/homepage/Header";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { CheckCircle, Menu, X } from "lucide-react";
 
 
