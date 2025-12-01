@@ -33,36 +33,52 @@ const Todo = () => {
   };
 
   const removeFromList = async (id) => {
-    //remove from todo list
+  try {
+    const { data } = await axios.delete(`/api/todo/deleteTask/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
 
-    try {
-      const { data } = await axios.delete(`/api/todo/deleteTask/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      // console.log("delete Responce=", data);
-      setTodos((c) => c.filter((todo) => todo.id !== id));
-    } catch (e) {
-      console.log(e.response.data.message);
-    }
-  };
+    setTodos((prev) => {
+      const index = prev.findIndex((todo) => todo.id === id);
+      if (index === -1) return prev;   
 
-  const toggleTodo = async (id) => {
-    try {
-      const { data } = await axios.put(
-        "/api/todo/toggleList",
-        { id },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      // console.log("Toggle Responce=", data);
-      setTodos((c) =>
-        c.map((todo) =>
-          todo.id === id ? { ...todo, completed: !todo.completed } : todo
-        )
-      );
-    } catch (error) {
-      console.log(error.response.data.message);
-    }
-  };
+      const updated = [...prev];
+      updated.splice(index, 1);       
+      return updated;
+    });
+  } catch (e) {
+    console.log(e.response?.data?.message);
+  }
+};
+
+
+const toggleTodo = async (id) => {
+  try {
+    const { data } = await axios.put(
+      "/api/todo/toggleList",
+      { id },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    setTodos((prev) => {
+      const index = prev.findIndex((todo) => todo.id === id);
+      if (index === -1) return prev;
+
+      const updated = [...prev]; // copy
+      updated[index] = {
+        ...updated[index],
+        completed: !updated[index].completed,
+      };
+
+      return updated;
+    });
+  } catch (error) {
+    console.log(error.response?.data?.message);
+  }
+};
+
+
+
   const handleKeyPress = (e) => {
     // press enter to Add list
     if (e.key === "Enter") {
@@ -154,7 +170,7 @@ const Todo = () => {
     } else {
       fetchAllInCompletedTask();
     }
-  }, [activeTodos]);
+  }, []);
 
 
   return (
