@@ -119,6 +119,7 @@ const Login = () => {
 
         <div className="mb-4">
           <button
+          disabled={loading}
             onClick={handleLogin}
             className="bg-purple-500 hover:bg-purple-600 text-white rounded-lg w-full py-3 font-semibold transition-colors shadow-lg hover:shadow-xl cursor-pointer"
           >
