@@ -12,14 +12,12 @@ const Login = () => {
   });
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const [remember,setRemember]=useState(false);
+  const [remember, setRemember] = useState(false);
 
-    const {setIsTokenValid}=useContext(TokenContext);
+  const { setIsTokenValid } = useContext(TokenContext);
 
-    const [error,setError]=useState(null);
-
-  
-  
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -29,46 +27,48 @@ const Login = () => {
   const handleLogin = async () => {
     try {
       // console.log(formData);
+
+      setLoading(true);
       const { data } = await axios.post("/api/user/login", formData);
       // console.log(data);
 
       if (data.success) {
         localStorage.setItem("accessToken", data.accessToken);
-        if(remember)
-        {
-          const {data:data1}=await axios.get("/api/user/remember_me",{headers:{Authorization:`Bearer ${data.accessToken}`}});
+        if (remember) {
+          const { data: data1 } = await axios.get("/api/user/remember_me", {
+            headers: { Authorization: `Bearer ${data.accessToken}` },
+          });
           // console.log("data=",data1);
-          
-          localStorage.setItem("email",data1.email);
-          localStorage.setItem("remember",remember);
-        }else{
+
+          localStorage.setItem("email", data1.email);
+          localStorage.setItem("remember", remember);
+        } else {
           localStorage.removeItem("email");
-          localStorage.setItem("remember",false);
+          localStorage.setItem("remember", false);
         }
         setIsTokenValid(true);
         navigate("/todo", { replace: true });
-
-      } 
+      }
     } catch (error) {
       console.log(error.response.data.message);
       setError(error.response.data.message);
+    } finally {
+      setLoading(false);
     }
   };
 
-  useEffect(()=>{
-   const email= localStorage.getItem("email");
-   const remember=localStorage.getItem("remember")==="true";
-    if(email && remember){
-      setFormData({email,password:""});
+  useEffect(() => {
+    const email = localStorage.getItem("email");
+    const remember = localStorage.getItem("remember") === "true";
+    if (email && remember) {
+      setFormData({ email, password: "" });
       setRemember(true);
     }
-  },[]);
+  }, []);
 
   return (
     <div className="h-[calc(100vh-3.75rem)] bg-gradient-to-br from-blue-500 to-purple-600  flex items-center justify-center flex-col mt-15">
-      <div>
-      
-      </div>
+      <div></div>
       <div className=" bg-white p-8 max-w-md rounded-2xl shadow-2xs w-full space-y-3">
         <div className="text-center">
           <h1 className="text-3xl font-bold text-gray-800 text-center mb-2">
@@ -87,7 +87,7 @@ const Login = () => {
             handleChange={handleChange}
             formData={formData}
           />
-         
+
           <Input
             Icon={Lock}
             placeholder="Enter your password"
@@ -102,7 +102,6 @@ const Login = () => {
             formData={formData}
             islogin={true}
             error={error}
-
           />
         </div>
 
@@ -110,7 +109,7 @@ const Login = () => {
           <input
             type="checkbox"
             checked={remember}
-            onChange={()=>setRemember(!remember)}
+            onChange={() => setRemember(!remember)}
             className="w-4 h-4 text-indigo-500 border-gray-300 rounded focus:ring-indigo-500"
           />
           <label htmlFor="remember" className="ml-2 text-sm text-gray-700">
@@ -123,7 +122,14 @@ const Login = () => {
             onClick={handleLogin}
             className="bg-purple-500 hover:bg-purple-600 text-white rounded-lg w-full py-3 font-semibold transition-colors shadow-lg hover:shadow-xl cursor-pointer"
           >
-            Log in
+            {loading ? (
+              <div className="flex items-center gap-2 justify-center">
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <span>Logging in...</span>
+              </div>
+            ) : (
+              "Log in"
+            )}
           </button>
         </div>
 

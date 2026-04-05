@@ -6,16 +6,17 @@ import axios from "axios";
 import { NavLink, useNavigate } from "react-router-dom";
 
 const SignupForm = () => {
-const navigate=useNavigate();
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    username : "",
-    email : "",
-    password : "",
+    username: "",
+    email: "",
+    password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
-  const [isSubmit,setIsSubmit]=useState(false);
-  const [error,setError]=useState({});
+  const [isSubmit, setIsSubmit] = useState(false);
+  const [error, setError] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData((c) => ({ ...c, [e.target.name]: e.target.value }));
@@ -23,60 +24,69 @@ const navigate=useNavigate();
   };
   // console.log(formData);
 
-  const signofResponce=async ()=>{
+  const signofResponce = async () => {
+    return await axios.post("/api/user/signup", formData);
+  };
 
-   return await axios.post("/api/user/signup",formData)
-  }
-  
-
-  const handleSubmit=async ()=>{
-    if(!validate(formData,setError))
-    {
+  const handleSubmit = async () => {
+    if (!validate(formData, setError)) {
       return;
     }
-   try {
-     const {data} = await signofResponce()
-    // console.log(data);
-    
-    if(!data.success)
-    {
-      return ;
+    setLoading(true);
+    try {
+      const { data } = await signofResponce();
+      // console.log(data);
+
+      if (!data.success) {
+        return;
+      }
+
+      setIsSubmit(true);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
     }
-    
+    // console.log(formData);
+  };
 
-    setIsSubmit(true);
-    
-   } catch (error) {
-    console.log(error)
-    
-   }
-  // console.log(formData);
-  }
+  const completeSignup = () => {
+    setIsSubmit(false);
+    navigate("/login", { replace: true });
+  };
 
-    const completeSignup=()=>{
-setIsSubmit(false);
-navigate("/login",{replace:true});
-    }
-
-
-  if(isSubmit){
-    return (<div className="min-h-screen bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center p-4">
+  if (isSubmit) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full text-center">
           <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+            <svg
+              className="w-8 h-8 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M5 13l4 4L19 7"
+              ></path>
             </svg>
           </div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">Account Created!</h2>
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">
+            Account Created!
+          </h2>
           <p className="text-gray-600 mb-6">Welcome, {formData.username}!</p>
           <button
-            onClick={completeSignup }
+            onClick={completeSignup}
             className="bg-purple-500 hover:bg-purple-600 text-white px-6 py-2 rounded-lg font-semibold transition-colors cursor-pointer"
           >
-           Login to start
+            Login to start
           </button>
         </div>
-      </div>);
+      </div>
+    );
   }
 
   return (
@@ -127,8 +137,18 @@ navigate("/login",{replace:true});
         </div>
 
         <div>
-          <button onClick={handleSubmit} className="bg-purple-500 hover:bg-purple-600 text-white rounded-lg w-full py-3 font-semibold transition-colors shadow-lg hover:shadow-xl cursor-pointer">
-            Sing up
+          <button
+            onClick={handleSubmit}
+            className="bg-purple-500 hover:bg-purple-600 text-white rounded-lg w-full py-3 font-semibold transition-colors shadow-lg hover:shadow-xl cursor-pointer"
+          >
+            {loading ? (
+              <div className="flex items-center gap-2 justify-center">
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <span>Signing in...</span>
+              </div>
+            ) : (
+              "Sign in"
+            )}
           </button>
         </div>
 
