@@ -9,7 +9,7 @@ import {
   RouterProvider,
   Route,
 } from "react-router-dom";
-import RootLayout from "./RootLayout";
+import RootLayout from "./RootLayout";  
 import Error404 from "./Error404";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -46,6 +46,7 @@ function App() {
       </Route>
     )
   );
+  
   return (
     <>
       <RouterProvider router={router} />
